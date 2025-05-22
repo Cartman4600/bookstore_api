@@ -1,0 +1,31 @@
+id,title,author,publication_year,publisher,pages,price,in_stock
+1,Der stille Fluss,Anna Meier,2020,Nordlicht Verlag,312,19.99,0
+2,Schatten im Licht,Lukas Brandt,2018,Südwind Verlag,280,17.5,26
+3,Der Programmierer,Clara König,2021,TechBooks,415,29.9,11
+4,Geschichten aus dem Wald,Paul Richter,2015,Grünwald Verlag,198,12.0,0
+5,Im Auge des Orkans,Mia Fischer,2019,Sturm & Drang,365,22.99,36
+6,Digitale Welten,Jonas Neumann,2022,Future Press,344,31.5,52
+7,Kaffee & Gedanken,Sarah Müller,2017,Café-Verlag,190,15.8,0
+8,Mathematik für Neugierige,Dr. Felix Weber,2020,Wissen Kompakt,512,34.9,13
+9,Die Farbe der Nacht,Nora Schwarz,2016,Dunkellicht Verlag,278,16.5,7
+10,Reise zum Mars,Tom Berger,2021,Galaxy Books,402,25.0,3
+11,Herz über Kopf,Laura Sommer,2014,Romance Edition,330,14.99,60
+12,Wolkenbruch,Manuel Frei,2013,Bergblick Verlag,222,13.8,9
+13,Die letzte Formel,Elisabeth Frank,2022,Wissenschaft Aktuell,388,27.99,0
+14,Vom Korn zum Brot,Bäckermeister Huber,2010,Haus & Hof,150,11.2,21
+15,Fotografie heute,Linda Roth,2018,Bildschön Verlag,290,24.9,33
+16,Tee & Tradition,Akiko Tanaka,2019,Asien Kultur,310,22.5,0
+17,Code & Kaffee,Max Hartmann,2021,CodePress,370,28.8,2
+18,Der Glasmensch,Tanja Reichel,2016,PsychoVerlag,280,18.5,19
+19,Energie der Zukunft,Nils Keller,2020,Öko Verlag,405,31.2,38
+20,Sterne und Staub,Yvonne Stern,2023,Cosmos Books,450,35.0,15
+21,Wald der Geheimnisse,Gregor Busch,2015,Natur Pur,250,14.7,47
+22,Python Basics,Nico Bauer,2021,CodeCraft,320,29.9,1
+23,Das verlorene Manuskript,Franziska Adler,2018,Historica,275,19.9,5
+24,Digital Detox,Jan Krüger,2019,Balance Verlag,210,16.8,44
+25,Einfach Französisch,Claire Dubois,2020,Sprachenwelt,350,20.0,22
+26,Java für Einsteiger,Michael Schulz,2022,DevBooks,410,32.0,14
+27,Kreatives Schreiben,Julia Winter,2017,Autoren Verlag,265,21.9,41
+28,Die Kaffeemaschine,Sven Römer,2016,Haushalt & Technik,198,14.5,6
+29,Der Algorithmus,Elena Kraus,2021,AI Press,390,33.3,17
+30,Mitternachtskrimi,Ben Fischer,2023,KrimiKunst,310,23.9,58

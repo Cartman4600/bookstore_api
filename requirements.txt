@@ -1,0 +1,8 @@
+fastapi
+pathlib
+sqlalchemy
+dotenv
+os
+uvicorn
+pydantic
+typing

@@ -1,0 +1,31 @@
+id,title,author,publication_year,publisher,pages,price
+1,Die Algorithmische Reise,Max König,2020,DatenWelt Verlag,320,14.99
+2,Python für Visionäre,Sarah Meißner,2021,CodeWerk,280,12.50
+3,Künstliche Intelligenz verstehen,Dr. Jonas Berg,2023,Digitaler Puls,340,16.99
+4,Maschinenethik und Moral,Laura Stein,2022,TechnikKultur,265,13.49
+5,SQL Meisterkurs,Kevin Trapp,2019,Datenkraft,310,11.00
+6,Effizient programmieren mit Rust,Michael Krause,2022,CodeSchmiede,295,15.75
+7,Frontend Entwicklung mit Stil,Anne Roth,2021,WebArt,270,13.80
+8,Datenbanken leicht gemacht,Felix Hahn,2020,DB Pro Verlag,250,10.90
+9,Digitale Gesellschaft 4.0,Dr. Nina Vogt,2023,SozialDigital,360,17.49
+10,Reise durch das neuronale Netz,Thomas Ulrich,2021,DeepLearn Press,330,14.20
+11,KI im Alltag,Verena Schäfer,2022,SmartLife Verlag,280,13.00
+12,Mathematik für Entwickler,Oliver Kühn,2019,Formelwerk,310,12.60
+13,Cloud Computing Basics,Christian Graf,2020,Wolkenwerk,260,11.70
+14,Moderne Softwarearchitektur,Nicole Schmitt,2021,SystemDesign Verlag,290,15.00
+15,Cybersicherheit verstehen,Andreas Kurz,2023,SicherDigital,275,14.10
+16,Machine Learning in der Praxis,Lena Maurer,2022,PraxisAI,345,17.90
+17,Programmieren für Einsteiger,Daniel Weiß,2021,CodingStart Verlag,220,9.99
+18,Data Science kompakt,Sophie Klein,2020,Insight Verlag,305,13.40
+19,Entwicklung mobiler Apps,Marvin Schröder,2022,AppWorld Press,285,12.99
+20,Netzwerke erklärt,Claudia Baum,2019,InfraVerlag,270,11.60
+21,Automatisierung mit Python,Julian Albrecht,2021,SkriptPlus,260,12.50
+22,Kreatives Coden,Leonie Marx,2020,CodeKunst,240,10.20
+23,JavaScript intensiv,Tobias Engel,2022,WebDev Verlag,275,13.80
+24,Das UX Handbuch,Franziska Böhm,2021,DesignNow,300,14.70
+25,Software testen professionell,Paul Reinhardt,2019,Testdrive Verlag,265,11.30
+26,Game Development Einstieg,Karina Busch,2023,PixelForge,315,16.20
+27,Open Source verstehen,Luca Breuer,2020,OpenMind Press,250,10.80
+28,IT-Projektmanagement,Heike Förster,2022,PlanIT Verlag,290,13.99
+29,Blockchain Basics,Niklas Ritter,2021,ChainBook,275,12.20
+30,Agiles Arbeiten im Team,Katrin Scholz,2023,Teamflow Verlag,260,11.95
