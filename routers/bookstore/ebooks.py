@@ -1,65 +1,87 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
+from typing import List, Union
 from sqlalchemy.orm import Session
-from typing import List
 
 from database import get_bookstore_db
 from models.bookstore.ebooks import Ebook
 from schemas.bookstore.ebooks import EbookCreate, EbookUpdate, EbookRead
 from auth import verify_token
+from routers.crud_funtions import (create_post_handler, 
+                                   create_read_one_handler, 
+                                   create_read_all_handler, 
+                                   create_update_handler, 
+                                   create_delete_handler
+                                  )
 
 router = APIRouter()
 
-# erstellen
+# Create
+post_item_handler = create_post_handler(Model = Ebook, 
+                                        Schema = EbookCreate, 
+                                        db_getter = get_bookstore_db
+                                       )
+
 @router.post("/", 
              response_model = EbookRead, 
              status_code    = status.HTTP_201_CREATED, 
              dependencies   = [Depends(verify_token)]
              )
-def create_ebook(ebook: EbookCreate, db: Session = Depends(get_bookstore_db)):
-    db_ebook = Ebook(**ebook.model_dump())
-    db.add(db_ebook)
-    db.commit()
-    db.refresh(db_ebook)
-    return db_ebook
+def post_handler(item:Union[EbookCreate, List[EbookCreate]],
+                 db: Session = Depends(get_bookstore_db)):
+    return post_item_handler(item = item, db = db)
+    
 
-# alle lesen
+# Read all
+read_all_items_handler = create_read_all_handler(Model     = Ebook,
+                                                db_getter = get_bookstore_db
+                                               )
+
 @router.get("/", response_model = List[EbookRead])
-def read_ebooks(skip: int = 0, limit: int = 100, db: Session = Depends(get_bookstore_db)):
-    ebooks = db.query(Ebook).offset(skip).limit(limit).all()
-    return ebooks
+def read_all_handler(skip:int   = 0, 
+                     limit:int  = 100, 
+                     db:Session = Depends(get_bookstore_db)
+                    ):
+    return read_all_items_handler(skip = skip, limit = limit, db = db)
 
-# lesen nur einer
-@router.get("/{ebook_id}", response_model = EbookRead)
-def read_ebook(ebook_id: int, db: Session = Depends(get_bookstore_db)):
-    ebook = db.query(Ebook).filter(Ebook.id == ebook_id).first()
-    if not ebook:
-        raise HTTPException(status_code = 404, detail = f"Ebook with id {ebook_id} not found")
-    return ebook
+# Read one
+read_one_item_handler = create_read_one_handler(Model     = Ebook,
+                                                db_getter = get_bookstore_db
+                                               )
 
-# ändern
-@router.put("/{ebook_id}", 
-            response_model = EbookRead, 
+@router.get("/{item_id}", response_model = EbookRead)
+def read_one_handler(item_id:int, 
+                     db: Session = Depends(get_bookstore_db)
+                    ):
+    return read_one_item_handler( item_id = item_id, db = db)
+
+# Update
+update_item_handler = create_update_handler(Model     = Ebook, 
+                                            Schema    = EbookUpdate, 
+                                            db_getter = get_bookstore_db
+                                           )
+
+@router.put("/{item_id}", 
+            response_model = EbookRead,
             dependencies   = [Depends(verify_token)]
             )
-def update_ebook(ebook_id: int, ebook_update: EbookUpdate, db: Session = Depends(get_bookstore_db)):
-    ebook = db.query(Ebook).filter(Ebook.id == ebook_id).first()
-    if not ebook:
-        raise HTTPException(status_code = 404, detail = f"Ebook with id {ebook_id} not found")
-    for key, value in ebook_update.model_dump(exclude_unset = True).items():
-        setattr(ebook, key, value)
-    db.commit()
-    db.refresh(ebook)
-    return ebook
+def update_handler(item_id:int,
+                   update_data:EbookUpdate, 
+                   db:Session = Depends(get_bookstore_db)
+                  ):
+    return update_item_handler(item_id     = item_id,
+                               update_data = update_data,
+                               db          = db
+                              )
 
-# löschen
-@router.delete("/{ebook_id}", 
+# Delete
+delete_item_handler = create_delete_handler(Model = Ebook, db_getter = get_bookstore_db)
+
+@router.delete("/{item_id}", 
                status_code  = status.HTTP_204_NO_CONTENT, 
                dependencies = [Depends(verify_token)]
-               )
-def delete_ebook(ebook_id: int, db: Session = Depends(get_bookstore_db)):
-    ebook = db.query(Ebook).filter(Ebook.id == ebook_id).first()
-    if not ebook:
-        raise HTTPException(status_code = 404, detail = f"Ebook with id {ebook_id} not found")
-    db.delete(ebook)
-    db.commit()
-    return None
+              )
+def delete_handler(item_id:int, 
+                   db:Session = Depends(get_bookstore_db)
+                  ):
+    
+    return delete_item_handler(item_id = item_id, db = db)

@@ -1,65 +1,87 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
+from typing import List, Union
 from sqlalchemy.orm import Session
-from typing import List
 
 from database import get_coffee_shop_db
 from models.coffee_shop.apple_spritzer import AppleSpritzer
 from schemas.coffee_shop.apple_spritzer import AppleSpritzerCreate, AppleSpritzerRead, AppleSpritzerUpdate
 from auth import verify_token
+from routers.crud_funtions import (create_post_handler, 
+                                   create_read_one_handler, 
+                                   create_read_all_handler, 
+                                   create_update_handler, 
+                                   create_delete_handler
+                                  )
 
 router = APIRouter()
 
-# erstellen
+# Create
+post_item_handler = create_post_handler(Model = AppleSpritzer, 
+                                        Schema = AppleSpritzerCreate, 
+                                        db_getter = get_coffee_shop_db
+                                       )
+
 @router.post("/", 
              response_model = AppleSpritzerRead, 
              status_code    = status.HTTP_201_CREATED, 
              dependencies   = [Depends(verify_token)]
              )
-def create_apple_spritzer(apple_spritzer: AppleSpritzerCreate, db: Session = Depends(get_coffee_shop_db)):
-    db_apple_spritzer = AppleSpritzer(**apple_spritzer.model_dump())
-    db.add(db_apple_spritzer)
-    db.commit()
-    db.refresh(db_apple_spritzer)
-    return db_apple_spritzer
+def post_handler(item:Union[AppleSpritzerCreate, List[AppleSpritzerCreate]],
+                 db: Session = Depends(get_coffee_shop_db)):
+    return post_item_handler(item = item, db = db)
+    
 
-# alle lesen
+# Read all
+read_all_items_handler = create_read_all_handler(Model     = AppleSpritzer,
+                                                db_getter = get_coffee_shop_db
+                                               )
+
 @router.get("/", response_model = List[AppleSpritzerRead])
-def read_apple_spritzers(skip: int = 0, limit: int = 100, db: Session = Depends(get_coffee_shop_db)):
-    apple_spritzers = db.query(AppleSpritzer).offset(skip).limit(limit).all()
-    return apple_spritzers
+def read_all_handler(skip:int   = 0, 
+                     limit:int  = 100, 
+                     db:Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_all_items_handler(skip = skip, limit = limit, db = db)
 
-# lesen nur einer
-@router.get("/{apple_spritzer_id}", response_model = AppleSpritzerRead)
-def read_apple_spritzer(apple_spritzer_id: int, db: Session = Depends(get_coffee_shop_db)):
-    apple_spritzer = db.query(AppleSpritzer).filter(AppleSpritzer.id == apple_spritzer_id).first()
-    if not apple_spritzer:
-        raise HTTPException(status_code = 404, detail = f"Apple spritzer with id {apple_spritzer_id} not found")
-    return apple_spritzer
+# Read one
+read_one_item_handler = create_read_one_handler(Model     = AppleSpritzer,
+                                                db_getter = get_coffee_shop_db
+                                               )
 
-# ändern
-@router.put("/{apple_spritzer_id}", 
-            response_model = AppleSpritzerRead, 
+@router.get("/{item_id}", response_model = AppleSpritzerRead)
+def read_one_handler(item_id:int, 
+                     db: Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_one_item_handler( item_id = item_id, db = db)
+
+# Update
+update_item_handler = create_update_handler(Model     = AppleSpritzer, 
+                                            Schema    = AppleSpritzerUpdate, 
+                                            db_getter = get_coffee_shop_db
+                                           )
+
+@router.put("/{item_id}", 
+            response_model = AppleSpritzerRead,
             dependencies   = [Depends(verify_token)]
             )
-def update_apple_spritzer(apple_spritzer_id: int, apple_spritzer_update: AppleSpritzerUpdate, db: Session = Depends(get_coffee_shop_db)):
-    apple_spritzer = db.query(AppleSpritzer).filter(AppleSpritzer.id == apple_spritzer_id).first()
-    if not apple_spritzer:
-        raise HTTPException(status_code = 404, detail = f"Apple spritzer with id {apple_spritzer_id} not found")
-    for key, value in apple_spritzer_update.model_dump(exclude_unset = True).items():
-        setattr(apple_spritzer, key, value)
-    db.commit()
-    db.refresh(apple_spritzer)
-    return apple_spritzer
+def update_handler(item_id:int,
+                   update_data:AppleSpritzerUpdate, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    return update_item_handler(item_id     = item_id,
+                               update_data = update_data,
+                               db          = db
+                              )
 
-# löschen
-@router.delete("/{apple_spritzer_id}", 
+# Delete
+delete_item_handler = create_delete_handler(Model = AppleSpritzer, db_getter = get_coffee_shop_db)
+
+@router.delete("/{item_id}", 
                status_code  = status.HTTP_204_NO_CONTENT, 
                dependencies = [Depends(verify_token)]
-               )
-def delete_apple_spritzer(apple_spritzer_id: int, db: Session = Depends(get_coffee_shop_db)):
-    apple_spritzer = db.query(AppleSpritzer).filter(AppleSpritzer.id == apple_spritzer_id).first()
-    if not apple_spritzer:
-        raise HTTPException(status_code = 404, detail = f"Apple spritzer with id {apple_spritzer_id} not found")
-    db.delete(apple_spritzer)
-    db.commit()
-    return None
+              )
+def delete_handler(item_id:int, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    
+    return delete_item_handler(item_id = item_id, db = db)

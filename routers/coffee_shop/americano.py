@@ -1,65 +1,87 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
+from typing import List, Union
 from sqlalchemy.orm import Session
-from typing import List
 
 from database import get_coffee_shop_db
 from models.coffee_shop.americano import Americano
 from schemas.coffee_shop.americano import AmericanoCreate, AmericanoRead, AmericanoUpdate
 from auth import verify_token
+from routers.crud_funtions import (create_post_handler, 
+                                   create_read_one_handler, 
+                                   create_read_all_handler, 
+                                   create_update_handler, 
+                                   create_delete_handler
+                                  )
 
 router = APIRouter()
 
-# erstellen
+# Create
+post_item_handler = create_post_handler(Model = Americano, 
+                                        Schema = AmericanoCreate, 
+                                        db_getter = get_coffee_shop_db
+                                       )
+
 @router.post("/", 
              response_model = AmericanoRead, 
              status_code    = status.HTTP_201_CREATED, 
              dependencies   = [Depends(verify_token)]
              )
-def create_americano(americano: AmericanoCreate, db: Session = Depends(get_coffee_shop_db)):
-    db_americano = Americano(**americano.model_dump())
-    db.add(db_americano)
-    db.commit()
-    db.refresh(db_americano)
-    return db_americano
+def post_handler(item:Union[AmericanoCreate, List[AmericanoCreate]],
+                 db: Session = Depends(get_coffee_shop_db)):
+    return post_item_handler(item = item, db = db)
+    
 
-# alle lesen
+# Read all
+read_all_items_handler = create_read_all_handler(Model     = Americano,
+                                                db_getter = get_coffee_shop_db
+                                               )
+
 @router.get("/", response_model = List[AmericanoRead])
-def read_americanos(skip: int = 0, limit: int = 100, db: Session = Depends(get_coffee_shop_db)):
-    americanos = db.query(Americano).offset(skip).limit(limit).all()
-    return americanos
+def read_all_handler(skip:int   = 0, 
+                     limit:int  = 100, 
+                     db:Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_all_items_handler(skip = skip, limit = limit, db = db)
 
-# lesen nur einer
-@router.get("/{americano_id}", response_model = AmericanoRead)
-def read_americano(americano_id: int, db: Session = Depends(get_coffee_shop_db)):
-    americano = db.query(Americano).filter(Americano.id == americano_id).first()
-    if not americano:
-        raise HTTPException(status_code = 404, detail = f"Americano with id {americano_id} not found")
-    return americano
+# Read one
+read_one_item_handler = create_read_one_handler(Model     = Americano,
+                                                db_getter = get_coffee_shop_db
+                                               )
 
-# ändern
-@router.put("/{americano_id}", 
-            response_model = AmericanoRead, 
+@router.get("/{item_id}", response_model = AmericanoRead)
+def read_one_handler(item_id:int, 
+                     db: Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_one_item_handler( item_id = item_id, db = db)
+
+# Update
+update_item_handler = create_update_handler(Model     = Americano, 
+                                            Schema    = AmericanoUpdate, 
+                                            db_getter = get_coffee_shop_db
+                                           )
+
+@router.put("/{item_id}", 
+            response_model = AmericanoRead,
             dependencies   = [Depends(verify_token)]
             )
-def update_americano(americano_id: int, americano_update: AmericanoUpdate, db: Session = Depends(get_coffee_shop_db)):
-    americano = db.query(Americano).filter(Americano.id == americano_id).first()
-    if not americano:
-        raise HTTPException(status_code = 404, detail = f"Americano with id {americano_id} not found")
-    for key, value in americano_update.model_dump(exclude_unset = True).items():
-        setattr(americano, key, value)
-    db.commit()
-    db.refresh(americano)
-    return americano
+def update_handler(item_id:int,
+                   update_data:AmericanoUpdate, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    return update_item_handler(item_id     = item_id,
+                               update_data = update_data,
+                               db          = db
+                              )
 
-# löschen
-@router.delete("/{americano_id}", 
+# Delete
+delete_item_handler = create_delete_handler(Model = Americano, db_getter = get_coffee_shop_db)
+
+@router.delete("/{item_id}", 
                status_code  = status.HTTP_204_NO_CONTENT, 
                dependencies = [Depends(verify_token)]
-               )
-def delete_americano(americano_id: int, db: Session = Depends(get_coffee_shop_db)):
-    americano = db.query(Americano).filter(Americano.id == americano_id).first()
-    if not americano:
-        raise HTTPException(status_code = 404, detail = f"Americano with id {americano_id} not found")
-    db.delete(americano)
-    db.commit()
-    return None
+              )
+def delete_handler(item_id:int, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    
+    return delete_item_handler(item_id = item_id, db = db)

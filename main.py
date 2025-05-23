@@ -26,8 +26,8 @@ app.include_router(apple_spritzer.router,  prefix = "/coffee_shop/apple_spritzer
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app",
-                host         = "192.168.2.204",
-                port         = 5001,
+                host         = "127.0.0.1",
+                port         = 5000,
                 reload       = True,
                 # Falls keine ssl Zertifikate zur Hand auskommentieren:
                 ssl_certfile = ROOT_DIR / 'data' / 'secret' / 'cert.pem',

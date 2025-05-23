@@ -1,65 +1,87 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
+from typing import List, Union
 from sqlalchemy.orm import Session
-from typing import List
 
 from database import get_coffee_shop_db
 from models.coffee_shop.lemonade import Lemonade
 from schemas.coffee_shop.lemonade import LemonadeCreate, LemonadeRead, LemonadeUpdate
 from auth import verify_token
+from routers.crud_funtions import (create_post_handler, 
+                                   create_read_one_handler, 
+                                   create_read_all_handler, 
+                                   create_update_handler, 
+                                   create_delete_handler
+                                  )
 
 router = APIRouter()
 
-# erstellen
+# Create
+post_item_handler = create_post_handler(Model = Lemonade, 
+                                        Schema = LemonadeCreate, 
+                                        db_getter = get_coffee_shop_db
+                                       )
+
 @router.post("/", 
              response_model = LemonadeRead, 
              status_code    = status.HTTP_201_CREATED, 
              dependencies   = [Depends(verify_token)]
              )
-def create_lemonade(lemonade: LemonadeCreate, db: Session = Depends(get_coffee_shop_db)):
-    db_lemonade = Lemonade(**lemonade.model_dump())
-    db.add(db_lemonade)
-    db.commit()
-    db.refresh(db_lemonade)
-    return db_lemonade
+def post_handler(item:Union[LemonadeCreate, List[LemonadeCreate]],
+                 db: Session = Depends(get_coffee_shop_db)):
+    return post_item_handler(item = item, db = db)
+    
 
-# alle lesen
+# Read all
+read_all_items_handler = create_read_all_handler(Model     = Lemonade,
+                                                db_getter = get_coffee_shop_db
+                                               )
+
 @router.get("/", response_model = List[LemonadeRead])
-def read_lemonades(skip: int = 0, limit: int = 100, db: Session = Depends(get_coffee_shop_db)):
-    lemonade = db.query(Lemonade).offset(skip).limit(limit).all()
-    return lemonade
+def read_all_handler(skip:int   = 0, 
+                     limit:int  = 100, 
+                     db:Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_all_items_handler(skip = skip, limit = limit, db = db)
 
-# lesen nur einer
-@router.get("/{lemonade_id}", response_model = LemonadeRead)
-def read_lemonade(lemonade_id: int, db: Session = Depends(get_coffee_shop_db)):
-    lemonade = db.query(Lemonade).filter(Lemonade.id == lemonade_id).first()
-    if not lemonade:
-        raise HTTPException(status_code = 404, detail = f"Lemonade with id {lemonade_id} not found")
-    return lemonade
+# Read one
+read_one_item_handler = create_read_one_handler(Model     = Lemonade,
+                                                db_getter = get_coffee_shop_db
+                                               )
 
-# ändern
-@router.put("/{lemonade_id}", 
-            response_model = LemonadeRead, 
+@router.get("/{item_id}", response_model = LemonadeRead)
+def read_one_handler(item_id:int, 
+                     db: Session = Depends(get_coffee_shop_db)
+                    ):
+    return read_one_item_handler( item_id = item_id, db = db)
+
+# Update
+update_item_handler = create_update_handler(Model     = Lemonade, 
+                                            Schema    = LemonadeUpdate, 
+                                            db_getter = get_coffee_shop_db
+                                           )
+
+@router.put("/{item_id}", 
+            response_model = LemonadeRead,
             dependencies   = [Depends(verify_token)]
             )
-def update_lemonade(lemonade_id: int, lemonade_update: LemonadeUpdate, db: Session = Depends(get_coffee_shop_db)):
-    lemonade = db.query(Lemonade).filter(Lemonade.id == lemonade_id).first()
-    if not lemonade:
-        raise HTTPException(status_code = 404, detail = f"Lemonade with id {lemonade_id} not found")
-    for key, value in lemonade_update.model_dump(exclude_unset = True).items():
-        setattr(lemonade, key, value)
-    db.commit()
-    db.refresh(lemonade)
-    return lemonade
+def update_handler(item_id:int,
+                   update_data:LemonadeUpdate, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    return update_item_handler(item_id     = item_id,
+                               update_data = update_data,
+                               db          = db
+                              )
 
-# löschen
-@router.delete("/{lemonade_id}", 
+# Delete
+delete_item_handler = create_delete_handler(Model = Lemonade, db_getter = get_coffee_shop_db)
+
+@router.delete("/{item_id}", 
                status_code  = status.HTTP_204_NO_CONTENT, 
                dependencies = [Depends(verify_token)]
-               )
-def delete_lemonade(lemonade_id: int, db: Session = Depends(get_coffee_shop_db)):
-    lemonade = db.query(Lemonade).filter(Lemonade.id == lemonade_id).first()
-    if not lemonade:
-        raise HTTPException(status_code = 404, detail = f"Lemonade with id {lemonade_id} not found")
-    db.delete(lemonade)
-    db.commit()
-    return None
+              )
+def delete_handler(item_id:int, 
+                   db:Session = Depends(get_coffee_shop_db)
+                  ):
+    
+    return delete_item_handler(item_id = item_id, db = db)
