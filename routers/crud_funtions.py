@@ -45,12 +45,19 @@ def create_read_all_handler(Model:Type[ModelType],
                             db_getter:Callable[[], Session]
                            ) -> Callable[..., List[ModelType]]:
     
-    def read_all_handler(skip:int   = 0, 
-                         limit:int  = 100, 
+    def read_all_handler(skip:int,
+                         limit:int,
                          db:Session = Depends(db_getter)
                         ) -> List[ModelType]:
         
-        return db.query(Model).offset(skip).limit(limit).all()
+        query = db.query(Model)
+        
+        if skip is not None:
+            query = query.offset(skip)
+        if limit is not None:
+            query = query.limit(limit)
+        
+        return query.all()
     
     return read_all_handler
 
