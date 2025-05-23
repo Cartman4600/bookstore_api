@@ -7,8 +7,8 @@ class LogRead(BaseModel):
     table_name: str
     item_id:    int
     operation:  str
-    old_data: Optional[dict]
-    new_data: Optional[dict]
+    old_data:   Optional[dict]
+    new_data:   Optional[dict]
     timestamp:  datetime
 
     model_config = ConfigDict(from_attributes = True)

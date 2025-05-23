@@ -7,5 +7,5 @@ class Book(MediaBase):
 
     author           = Column(String(255), nullable = False)
     publisher        = Column(String(255), nullable = False)
-    pages            = Column(Integer, nullable = False)
-    in_stock         = Column(Integer, nullable = False)
+    pages            = Column(Integer,     nullable = False)
+    in_stock         = Column(Integer,     nullable = False)
