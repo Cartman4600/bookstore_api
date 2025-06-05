@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 from database import get_bookstore_db
 from models.bookstore.books import Book
 from models.bookstore.movies import Movie
-from schemas.bookstore.summary import Summary
+from schemas.bookstore.summary import Summary, SummaryResponse
 
 router = APIRouter()
 
-@router.get("/", response_model = List[Summary])
+@router.get("/", response_model = SummaryResponse)
 def get_summary(db: Session = Depends(get_bookstore_db)):
 
     books = db.query(Book.id,
@@ -22,10 +22,10 @@ def get_summary(db: Session = Depends(get_bookstore_db)):
                          title        = b.title, 
                          in_stock     = b.in_stock, 
                          total_price  = b.total_price, 
-                         product_type = "book"
-                         ) 
-                         for b in books
-                ]
+                         product_type = "book") 
+                 for b in books]
+
+    value_books = sum(b.total_price for b in book_list)
 
     movies = db.query(Movie.id,
                       Movie.title,
@@ -37,10 +37,16 @@ def get_summary(db: Session = Depends(get_bookstore_db)):
                           title        = m.title, 
                           in_stock     = m.in_stock, 
                           total_price  = m.total_price, 
-                          product_type = "movie"
-                          ) 
-                          for m in movies
-                 ]
+                          product_type = "movie") 
+                  for m in movies]
 
-    return book_list + movie_list
+    value_movies = sum(m.total_price for m in movie_list)
 
+    all_items   = book_list + movie_list
+    total_value = value_books + value_movies
+
+    return SummaryResponse(total_value  = total_value,
+                           value_books  = value_books,
+                           value_movies = value_movies,
+                           items        = all_items
+                          )

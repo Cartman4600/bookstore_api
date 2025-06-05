@@ -16,8 +16,8 @@ from routers.crud_funtions import (create_post_handler,
 router = APIRouter()
 
 # Create
-post_item_handler = create_post_handler(Model = AppleSpritzer, 
-                                        Schema = AppleSpritzerCreate, 
+post_item_handler = create_post_handler(Model     = AppleSpritzer, 
+                                        Schema    = AppleSpritzerCreate, 
                                         db_getter = get_coffee_shop_db
                                        )
 
@@ -32,7 +32,7 @@ def post_handler(item:Union[AppleSpritzerCreate, List[AppleSpritzerCreate]],
     
 
 # Read all
-read_all_items_handler = create_read_all_handler(Model     = AppleSpritzer,
+read_all_items_handler = create_read_all_handler(Model    = AppleSpritzer,
                                                 db_getter = get_coffee_shop_db
                                                )
 

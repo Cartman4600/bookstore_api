@@ -16,8 +16,8 @@ from routers.crud_funtions import (create_post_handler,
 router = APIRouter()
 
 # Create
-post_item_handler = create_post_handler(Model = Movie, 
-                                        Schema = MovieCreate, 
+post_item_handler = create_post_handler(Model     = Movie, 
+                                        Schema    = MovieCreate, 
                                         db_getter = get_bookstore_db
                                        )
 
@@ -27,12 +27,13 @@ post_item_handler = create_post_handler(Model = Movie,
              dependencies   = [Depends(verify_token)]
              )
 def post_handler(item:Union[MovieCreate, List[MovieCreate]],
-                 db: Session = Depends(get_bookstore_db)):
+                 db: Session = Depends(get_bookstore_db)
+                ):
     return post_item_handler(item = item, db = db)
     
 
 # Read all
-read_all_items_handler = create_read_all_handler(Model     = Movie,
+read_all_items_handler = create_read_all_handler(Model    = Movie,
                                                 db_getter = get_bookstore_db
                                                )
 

@@ -16,13 +16,13 @@ from routers.crud_funtions import (create_post_handler,
 router = APIRouter()
 
 # Create
-post_item_handler = create_post_handler(Model = Book, 
-                                        Schema = BookCreate, 
+post_item_handler = create_post_handler(Model     = Book, 
+                                        Schema    = BookCreate, 
                                         db_getter = get_bookstore_db
                                        )
 
 @router.post("/", 
-             response_model = BookRead, 
+             response_model = Union[BookRead, List[BookRead]],      # TESTEN! vorher: response_model = BookRead,
              status_code    = status.HTTP_201_CREATED, 
              dependencies   = [Depends(verify_token)]
              )
@@ -32,7 +32,7 @@ def post_handler(item:Union[BookCreate, List[BookCreate]],
     
 
 # Read all
-read_all_items_handler = create_read_all_handler(Model     = Book,
+read_all_items_handler = create_read_all_handler(Model    = Book,
                                                 db_getter = get_bookstore_db
                                                )
 

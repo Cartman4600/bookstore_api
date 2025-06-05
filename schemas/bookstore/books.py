@@ -8,8 +8,8 @@ class BookCreate(MediaCreate):
     in_stock: Annotated[int, Field(ge = 0)]
 
 class BookUpdate(MediaUpdate):
-    author:   Annotated[Optional[str], Field(max_length = 255)]    = None
-    pages:    Annotated[Optional[int], Field(gt = 0)]               = None
+    author:   Annotated[Optional[str], Field(max_length = 255)]  = None
+    pages:    Annotated[Optional[int], Field(gt = 0)]            = None
     in_stock: Annotated[Optional[int], Field(ge = 0)]            = None
 
 class BookRead(MediaRead):

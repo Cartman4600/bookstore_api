@@ -29,12 +29,15 @@ COFFEE_SHOP_DB_URL = f"postgresql://{user_cs}:{password_cs}@{host_cs}:{port_cs}/
 engine_bookstore   = create_engine(BOOKSTORE_DB_URL)
 engine_coffee_shop = create_engine(COFFEE_SHOP_DB_URL)
 
-SessionLocal_Bookstore = sessionmaker(autocommit = False, 
-                                      autoflush  = False, 
-                                      bind       = engine_bookstore)
+SessionLocal_Bookstore   = sessionmaker(autocommit = False, 
+                                        autoflush  = False, 
+                                        bind       = engine_bookstore
+                                        )
+
 SessionLocal_Coffee_Shop = sessionmaker(autocommit = False, 
                                         autoflush  = False, 
-                                        bind       = engine_coffee_shop)
+                                        bind       = engine_coffee_shop
+                                        )
 
 # Base für bookstore models
 mapper_registry_bookstore = registry()

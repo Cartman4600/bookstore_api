@@ -11,7 +11,7 @@ class BackstockCreate(BackstockBase):
 
 class BackstockUpdate(BackstockBase):
     name:     Annotated[Optional[str], Field(max_length = 255)] = None
-    in_stock: Annotated[Optional[int], Field(ge = 0)]       = None
+    in_stock: Annotated[Optional[int], Field(ge = 0)]           = None
 
 class BackstockRead(BaseModel):
     id:       int
